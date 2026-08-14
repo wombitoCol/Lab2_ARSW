@@ -36,9 +36,28 @@ public class Control extends Thread {
 
     @Override
     public void run() {
+        long actualTime = System.currentTimeMillis();
         for(int i = 0;i < NTHREADS;i++ ) {
             pft[i].start();
+            synchronizedPrimes();
         }
     }
-    
+
+    private void synchronizedPrimes() {
+        long limite = System.currentTimeMillis() + TMILISECONDS;
+
+        for (int i = 0; i < NTHREADS; i++) {
+            long restante = limite - System.currentTimeMillis();
+            if (restante > 0) {
+                synchronized (pft[i]) {
+                    try {
+                        pft[i].wait(restante);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+            System.out.println(pft[i].getPrimes());
+        }
+    }
 }

@@ -19,10 +19,13 @@ public class PrimeFinderThread extends Thread{
 
         @Override
 	public void run(){
+            int totalPrimes = 0;
             for (int i= a;i < b;i++){						
                 if (isPrime(i)){
                     primes.add(i);
                     System.out.println(i);
+                    totalPrimes++;
+                    System.out.println("the total primes is: " + totalPrimes);
                 }
             }
 	}
@@ -43,5 +46,7 @@ public class PrimeFinderThread extends Thread{
 	public List<Integer> getPrimes() {
 		return primes;
 	}
+
+
 	
 }
