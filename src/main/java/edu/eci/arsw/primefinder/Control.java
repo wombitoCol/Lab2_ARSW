@@ -11,7 +11,7 @@ package edu.eci.arsw.primefinder;
 public class Control extends Thread {
     
     private final static int NTHREADS = 3;
-    private final static int MAXVALUE = 30000000;
+    private final static int MAXVALUE = 30000;
     private final static int TMILISECONDS = 5000;
 
     private final int NDATA = MAXVALUE / NTHREADS;
@@ -39,25 +39,25 @@ public class Control extends Thread {
         long actualTime = System.currentTimeMillis();
         for(int i = 0;i < NTHREADS;i++ ) {
             pft[i].start();
-            synchronizedPrimes();
         }
+        synchronizedPrimes();
     }
 
     private void synchronizedPrimes() {
-        long limite = System.currentTimeMillis() + TMILISECONDS;
 
         for (int i = 0; i < NTHREADS; i++) {
-            long restante = limite - System.currentTimeMillis();
-            if (restante > 0) {
+            while (true) {
                 synchronized (pft[i]) {
                     try {
-                        pft[i].wait(restante);
+                        pft[i].wait(TMILISECONDS);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
+                    System.out.println(pft[i].getPrimes());
                 }
             }
-            System.out.println(pft[i].getPrimes());
         }
+
+
     }
 }
