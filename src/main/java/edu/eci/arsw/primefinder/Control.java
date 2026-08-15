@@ -5,6 +5,8 @@
  */
 package edu.eci.arsw.primefinder;
 
+import java.util.Scanner;
+
 /**
  *
  */
@@ -36,7 +38,6 @@ public class Control extends Thread {
 
     @Override
     public void run() {
-        long actualTime = System.currentTimeMillis();
         for(int i = 0;i < NTHREADS;i++ ) {
             pft[i].start();
         }
@@ -44,7 +45,7 @@ public class Control extends Thread {
     }
 
     private void synchronizedPrimes() {
-
+        Scanner sc = new Scanner(System.in);
         for (int i = 0; i < NTHREADS; i++) {
             while (true) {
                 synchronized (pft[i]) {
@@ -54,10 +55,10 @@ public class Control extends Thread {
                         Thread.currentThread().interrupt();
                     }
                     System.out.println(pft[i].getPrimes());
+                    sc.nextLine();
+                    pft[i].notify();
                 }
             }
         }
-
-
     }
 }
