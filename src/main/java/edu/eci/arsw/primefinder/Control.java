@@ -11,9 +11,9 @@ import java.util.Scanner;
  *
  */
 public class Control extends Thread {
-    
+
     private final static int NTHREADS = 3;
-    private final static int MAXVALUE = 30000;
+    private final static int MAXVALUE = 300000000;
     private final static int TMILISECONDS = 5000;
 
     private final int NDATA = MAXVALUE / NTHREADS;
@@ -38,27 +38,31 @@ public class Control extends Thread {
 
     @Override
     public void run() {
-        for(int i = 0;i < NTHREADS;i++ ) {
-            pft[i].start();
-        }
         synchronizedPrimes();
     }
 
     private void synchronizedPrimes() {
         Scanner sc = new Scanner(System.in);
+
         for (int i = 0; i < NTHREADS; i++) {
-            while (true) {
-                synchronized (pft[i]) {
-                    try {
-                        pft[i].wait(TMILISECONDS);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                    System.out.println(pft[i].getPrimes());
-                    sc.nextLine();
-                    pft[i].notify();
-                }
-            }
+            pft[i].start();
+        }
+
+        try {
+            Thread.sleep(TMILISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        for (int i = 0; i < NTHREADS; i++) {
+            pft[i].setSuspended();
+        }
+
+        System.out.println("Hilos suspendidos. Presiona Enter para reanudar");
+        sc.nextLine();
+
+        for (int i = 0; i < NTHREADS; i++) {
+            pft[i].stopSuspended();
         }
     }
 }
